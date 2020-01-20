@@ -1,1 +1,5 @@
 .DS_Store
+MANIFEST
+dist
+setup.cfg
+setup.py
