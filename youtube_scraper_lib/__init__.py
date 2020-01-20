@@ -1,5 +1,5 @@
 #from os.path import dirname, basename, isfile
-#from .scraper import Scraper, Comments
+from .scraper import Scraper
 
 __version__ = "0.1"
 #
