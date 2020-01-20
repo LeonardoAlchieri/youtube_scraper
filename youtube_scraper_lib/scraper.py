@@ -31,10 +31,12 @@ class Scraper(object):
     description = None
     speak = True
     category = None
+    comments_to_scrape = None
 
     
-    def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True):
+    def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True, comments_to_scrape = None):
     
+        self.comments_to_scrape = comments_to_scrape
         self.speak = speak
         if id == None:
             print(bcolors.ERR+"[ERROR] No video id given."+bcolors.END)
@@ -296,7 +298,7 @@ class Scraper(object):
         driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
         
         # Sleep, to allow for page rendering
-        sleep_time_2 = 4
+        sleep_time_2 = 2
         if self.speak:
             print("[INFO] Sleeping for", sleep_time_2, "seconds")
         time.sleep(sleep_time_2)
@@ -306,8 +308,13 @@ class Scraper(object):
         
         if self.speak:
             print("[INFO] Scraping comments")
+        count = 0
         for comment_path in driver.find_elements_by_id("comment"):
             self.comments.append(Comment(path=comment_path, speak=self.speak).as_dict())
+            if(self.comments_to_scrape != None):
+                count = count + 1
+                if(count > self.comments_to_scrape):
+                    break
         
         # END
         if self.speak:
