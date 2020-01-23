@@ -13,7 +13,7 @@ import re
 from pprint import pprint
 from datetime import date
 
-    
+
 
 class Scraper(object):
     comments = []
@@ -33,15 +33,16 @@ class Scraper(object):
     category = None
     comments_to_scrape = None
 
-    
+
     def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True, comments_to_scrape = None):
-    
+
         self.comments_to_scrape = comments_to_scrape
+        print("COMMENTS TO SCRAPE", self.comments_to_scrape)
         self.speak = speak
         if id == None:
             print(bcolors.ERR+"[ERROR] No video id given."+bcolors.END)
             return -1
-            
+
         self.video_id = id
         self.video_url = "https://www.youtube.com/watch?v="+str(self.video_id)
         if self.speak:
@@ -148,11 +149,11 @@ class Scraper(object):
                     except:
                         print(bcolors.ERR+"[ERROR] Could not convert subscribe count from string to number"+bcolors.END)
                         return "Unknown"
-                    
+
             specification_letter = re.sub(r"[^A-Z]","",subscribers_string)
             # Youtube stores views using abbreviations
             return suffix_number(numbers, specification_letter)
-            
+
         except:
             if self.speak:
                 print(bcolors.WARN+"[WARNING] Could not find subscriber count information"+bcolors.END)
@@ -197,7 +198,7 @@ class Scraper(object):
             if self.speak:
                 print(bcolors.WARN+"[WARNING] Could not find description information."+bcolors.END)
             return "Unknown"
-            
+
     #
     #
     #
@@ -205,7 +206,7 @@ class Scraper(object):
         driver = self.driver
         try:
             comments_text = driver.find_element_by_xpath('//*[@id="count"]/yt-formatted-string').text.strip()
-            
+
             return int(re.sub(r"\D", "", comments_text))
         except:
             if self.speak:
@@ -252,34 +253,34 @@ class Scraper(object):
     #
     def scrape(self, close_on_complete=True):
         driver = self.driver
-        
+
         if self.speak:
             print("[INFO] Maximizing window")
         driver.maximize_window()
-        
+
         sleep_time = 2
         if self.speak:
             print("[INFO] Sleeping for", sleep_time,"seconds")
         time.sleep(sleep_time)
-        
+
         # Get title
         self.title = self.get_title()
 
         # Get views
         self.views = self.get_views()
-        
+
         # Get channel name
         self.channel_name = self.get_channel_name()
-        
+
         # Get channel subscribers
         self.channel_subscribers = self.get_channel_subscribers()
-        
+
         # Get likes and dislikes
         self.likes, self.dislikes = self.get_likes_dislikes()
-        
+
         # Get date
         self.date = self.get_date()
-        
+
         # I have to press the "Show more" button.
         try:
             driver.find_element_by_id("more").click()
@@ -288,24 +289,24 @@ class Scraper(object):
         except:
             if self.speak:
                 print(bcolors.WARN+"[WARNING] Could not find 'Show more' button"+bcolors.END)
-            
+
         # Get description
         self.description = self.get_description()
-        
+
         # Get category
         self.category = self.get_category()
-        
+
         driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
-        
+
         # Sleep, to allow for page rendering
         sleep_time_2 = 2
         if self.speak:
             print("[INFO] Sleeping for", sleep_time_2, "seconds")
         time.sleep(sleep_time_2)
-        
+
         # Get comments count
         self.comments_count = self.get_comments_count()
-        
+
         if self.speak:
             print("[INFO] Scraping comments")
         count = 0
@@ -315,7 +316,7 @@ class Scraper(object):
                 count = count + 1
                 if(count > self.comments_to_scrape):
                     break
-        
+
         # END
         if self.speak:
             print("[INFO] Scraping webpage completed")
@@ -343,7 +344,7 @@ class Scraper(object):
         "comments": self.comments
         }
         return str(result_dic)
-        
+
     #
     #
     #
