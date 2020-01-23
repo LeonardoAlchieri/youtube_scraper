@@ -36,8 +36,8 @@ class Scraper(object):
 
     def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True, comments_to_scrape = None):
 
+        self.comments = []
         self.comments_to_scrape = comments_to_scrape
-        print("COMMENTS TO SCRAPE", self.comments_to_scrape)
         self.speak = speak
         if id == None:
             print(bcolors.ERR+"[ERROR] No video id given."+bcolors.END)
