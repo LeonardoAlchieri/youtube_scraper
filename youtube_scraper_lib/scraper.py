@@ -310,6 +310,7 @@ class Scraper(object):
         if self.speak:
             print("[INFO] Scraping comments")
         count = 0
+        self.comments = []
         for comment_path in driver.find_elements_by_id("comment"):
             self.comments.append(Comment(path=comment_path, speak=self.speak).as_dict())
             if(self.comments_to_scrape != None):
