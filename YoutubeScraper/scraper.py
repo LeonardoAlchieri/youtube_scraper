@@ -10,12 +10,12 @@ from .comment import Comment
 import os
 import time
 import re
-from pprint import pprint
 from datetime import date
 
 
 
 class Scraper(object):
+    # Public variables used by the class.
     comments = []
     channel_name = None
     channel_subscribers = None
@@ -35,16 +35,21 @@ class Scraper(object):
 
 
     def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True, comments_to_scrape = None):
-
+        #
+        # [IMPORTANT] If an array is not defined in the constructor,
+        # it will be shared by every process
+        #
         self.comments = []
         self.comments_to_scrape = comments_to_scrape
         self.speak = speak
+
         if id == None:
             print(bcolors.ERR+"[ERROR] No video id given."+bcolors.END)
             return -1
 
         self.video_id = id
         self.video_url = "https://www.youtube.com/watch?v="+str(self.video_id)
+
         if self.speak:
             print("[INFO] Scraping webpage:", self.video_url)
         # If no information is given for the driver, I will try to find it.
@@ -78,7 +83,7 @@ class Scraper(object):
     def get_category(self):
         driver = self.driver
         try:
-        # There is not a specification for the Category tab: it share construct with other things.
+        # There is not a specification for the Category tab: it shares construct with other things.
         # I have to look through all of them to find the one called category.
             category_path = None
             for title in driver.find_elements_by_id("title"):
@@ -147,6 +152,10 @@ class Scraper(object):
                             print(bcolors.WARN+"[WARNING] Problem converting subscriber count. Maybe the number is whole"+bcolors.END)
                         numbers = int(re.sub(r"\D", "", subscribers_string))
                     except:
+                        #
+                        # [NOTE] Most of the times, when this is outputted, it's
+                        # due to abscence of subscribe number desplayed
+                        #
                         print(bcolors.ERR+"[ERROR] Could not convert subscribe count from string to number"+bcolors.END)
                         return "Unknown"
 

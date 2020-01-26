@@ -1,5 +1,9 @@
 import datetime
 
+#
+# Function to get suffix.
+# Youtube uses a specific set of abbreviations
+#
 def suffix_number(numbers, specification_letter):
     if(specification_letter == ""):
         return numbers
@@ -9,7 +13,11 @@ def suffix_number(numbers, specification_letter):
         return numbers * 1E6
     elif(specification_letter == "B"):
         return numbers * 1E9
-        
+
+#
+# Function to get the string number from the month abbreviated.
+# Youtube always uses this method.
+#
 def month_string_to_number(string):
     m = {
         'jan': 1,
@@ -32,7 +40,10 @@ def month_string_to_number(string):
         return out
     except:
         raise ValueError('Not a month')
-
+#
+# When youtube uses the construct with hourly events,
+# a little work is needed to get the correct date.
+#
 def get_date_from_hour_mark(string):
     if (datetime.datetime.now().hour - int(string)) >= 0:
         return datetime.date.today()
