@@ -1,9 +1,8 @@
 # Youtube Scraper
 
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.org/project/YoutubeScraper/)
-[![Ask Me Anything !]]
 [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.org/project/YoutubeScraper/)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.org/project/YoutubeScraper/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/pybadges.svg)](https://pypi.org/project/YoutubeScraper/)
 
 This library provides with a class, `Scraper`, that will take most of the information present on a video page.
 
