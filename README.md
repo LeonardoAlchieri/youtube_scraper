@@ -29,4 +29,4 @@ As of today, with the method `as_dict()`, results as dictionary can be obtained.
 
 Feel free to contact me. 😊
 
-@ 2019, Leonardo Alchieri
+@ 2020, Leonardo Alchieri
