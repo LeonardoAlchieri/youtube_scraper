@@ -1,25 +1,46 @@
-import datetime
+from datetime import datetime, date
+from typing import Literal, Union, Dict
 
-#
-# Function to get suffix.
-# Youtube uses a specific set of abbreviations
-#
-def suffix_number(numbers, specification_letter):
+def suffix_number(numbers: Union[int, float], 
+                  specification_letter: Literal['', 'K', 'M', 'B']) -> Union[int, float]:
+    """This method will apply the correct multiplication depending on the given specification.
+
+    Args:
+        numbers (Union[int, float]): number to multiply by the amount determined by `specification_letter`
+        specification_letter (Literal['', 'K', 'M', 'B']): letter to specify multiplier
+
+    Raises:
+        ValueError: if the specification_letter does not match on of the four available, the method will fail
+
+    Returns:
+        Union[int, float]: the method returns the `number` corectly re-scaled
+    """
     if(specification_letter == ""):
         return numbers
-    if(specification_letter == "K"):
+    elif(specification_letter == "K"):
         return numbers * 1E3
     elif(specification_letter == "M"):
         return numbers * 1E6
     elif(specification_letter == "B"):
         return numbers * 1E9
+    else:
+        raise ValueError(f'specification_letter should be either empty, K, M or B. Got {specification_letter} instead')
 
-#
-# Function to get the string number from the month abbreviated.
-# Youtube always uses this method.
-#
-def month_string_to_number(string):
-    m = {
+
+def month_string_to_number(string: str) -> int:
+    """Function to get the string number from the month abbreviated.
+    Youtube always uses this method.
+
+    Args:
+        string (str): string to check
+
+    Raises:
+        ValueError: if the string does not contain a month, than the method will fail
+
+    Returns:
+        [type]: int
+    """
+    m: Dict[str, int] = {
         'jan': 1,
         'feb': 2,
         'mar': 3,
@@ -34,18 +55,22 @@ def month_string_to_number(string):
         'dec':12
         }
     s = string.strip()[:3].lower()
-
-    try:
-        out = m[s]
-        return out
-    except:
+    out = m.get(s, None)
+    if out is None:
         raise ValueError('Not a month')
-#
-# When youtube uses the construct with hourly events,
-# a little work is needed to get the correct date.
-#
-def get_date_from_hour_mark(string):
-    if (datetime.datetime.now().hour - int(string)) >= 0:
-        return datetime.date.today()
+    return out
+        
+
+def get_date_from_hour_mark(string: str) -> date:
+    """When youtube uses the construct with hourly events, a little work is needed to get the correct date.
+
+    Args:
+        string ([type]): string to extract hour
+
+    Returns:
+        [type]: the correct date in `date` format
+    """
+    if (datetime.now().hour - int(string)) >= 0:
+        return date.today()
     else:
-        return datetime.date(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day -1)
+        return date(date.today().year, date.today().month, date.today().day -1)

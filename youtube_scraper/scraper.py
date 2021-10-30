@@ -2,31 +2,32 @@ from bcolors import ERR, END, WARN
 from selenium import webdriver
 from .functions import suffix_number, month_string_to_number, get_date_from_hour_mark
 from .comment import Comment
-import os
-import time
-import re
-from datetime import date
+from os import getenv, path 
+from time import sleep
+from re import sub
+from datetime import date as formatdate
+from typing import List, Union, Literal
 
 
 
 class Scraper(object):
     # Public variables used by the class.
-    comments = []
-    channel_name = None
-    channel_subscribers = None
-    date = None
-    title = None
-    likes = None
-    dislikes = None
-    views = None
+    comments: List[str] = []
+    channel_name: str = None
+    channel_subscribers: Union[float, Literal['Unknown'], None]= None
+    date: formatdate = None
+    title: str = None
+    likes: Union[int, Literal['Unknown'], None] = None
+    dislikes: Union[int, Literal['Unknown'], None] = None
+    views: Union[int, Literal['Unknown'], None] = None
     Date = None
-    comments_count = None
-    video_id = None
-    video_url = None
-    description = None
-    speak = True
-    category = None
-    comments_to_scrape = None
+    comments_count: Union[int, Literal['Unknown'], None] = None
+    video_id: Union[str, Literal['Unknown'], None] = None
+    video_url: Union[str, Literal['Unknown'], None] = None
+    description: Union[str, Literal['Unknown'], None] = None
+    speak: bool = True
+    category: Union[str, Literal['Unknown'], None] = None
+    comments_to_scrape: Union[int, Literal['Unknown'], None] = None
 
 
     def __init__(self, id=None, driver=None, scrape=True, speak=True, close_on_complete=True, comments_to_scrape = None):
@@ -52,10 +53,10 @@ class Scraper(object):
             print("[INFO] NO driver specified - trying to find one")
             try:
                 # Check if the driver is in the Path
-                if os.getenv("CHROMEDRIVER") == None:
-                    driver_path = os.path.join(os.path.dirname(__file__), 'drivers/chromedriver')
+                if getenv("CHROMEDRIVER") == None:
+                    driver_path = path.join(path.dirname(__file__), 'drivers/chromedriver')
                 else:
-                    driver_path = os.getenv("CHROMEDRIVER")
+                    driver_path = getenv("CHROMEDRIVER")
 
                 driver = webdriver.Chrome(driver_path)
             except:
@@ -109,7 +110,7 @@ class Scraper(object):
         driver = self.driver
         try:
             views_text = driver.find_element_by_class_name("view-count").text
-            return int(re.sub(r'\D', "", views_text))
+            return int(sub(r'\D', "", views_text))
         except:
             if self.speak:
                 print(WARN+"[WARNING] Could not find views information"+END)
@@ -134,18 +135,18 @@ class Scraper(object):
         try:
             subscribers_string = driver.find_element_by_id("owner-sub-count").text.strip()
             try:
-                numbers = float(re.sub(r"[A-Z].*$","",subscribers_string))
+                numbers = float(sub(r"[A-Z].*$","",subscribers_string))
             except:
                 if self.speak:
                     print(WARN+"[WARNING] Problem converting subscriber count. Maybe the number has a coma."+END)
                 try:
                     auxiliary_string = subscribers_string.replace(',','.')
-                    numbers = float(re.sub(r"[A-Z].*$","",auxiliary_string))
+                    numbers = float(sub(r"[A-Z].*$","",auxiliary_string))
                 except:
                     try:
                         if self.speak:
                             print(WARN+"[WARNING] Problem converting subscriber count. Maybe the number is whole"+END)
-                        numbers = int(re.sub(r"\D", "", subscribers_string))
+                        numbers = int(sub(r"\D", "", subscribers_string))
                     except:
                         #
                         # [NOTE] Most of the times, when this is outputted, it's
@@ -154,7 +155,7 @@ class Scraper(object):
                         print(ERR+"[ERROR] Could not convert subscribe count from string to number"+END)
                         return "Unknown"
 
-            specification_letter = re.sub(r"[^A-Z]","",subscribers_string)
+            specification_letter = sub(r"[^A-Z]","",subscribers_string)
             # Youtube stores views using abbreviations
             return suffix_number(numbers, specification_letter)
 
@@ -173,14 +174,14 @@ class Scraper(object):
             menu_container_path = driver.find_element_by_id("menu-container")
             try:
                 likes_string = menu_container_path.find_element_by_xpath("./div/ytd-menu-renderer/div/ytd-toggle-button-renderer/a/yt-formatted-string").get_attribute("aria-label").strip()
-                likes_aux = int(re.sub(r'\D', "", likes_string))
+                likes_aux = int(sub(r'\D', "", likes_string))
             except:
                 if self.speak:
                     print(WARN+"[WARNING] Could not find like count information"+END)
                 likes_aux = "Unknown"
             try:
                 dislikes_string = menu_container_path.find_element_by_xpath("./div/ytd-menu-renderer/div/ytd-toggle-button-renderer[2]/a/yt-formatted-string").get_attribute("aria-label").strip()
-                dislikes_aux = int(re.sub(r'\D', "", dislikes_string))
+                dislikes_aux = int(sub(r'\D', "", dislikes_string))
             except:
                 if self.speak:
                     print(WARN+"[WARNING] Could not find dislike count information"+END)
@@ -211,7 +212,7 @@ class Scraper(object):
         try:
             comments_text = driver.find_element_by_xpath('//*[@id="count"]/yt-formatted-string').text.strip()
 
-            return int(re.sub(r"\D", "", comments_text))
+            return int(sub(r"\D", "", comments_text))
         except:
             if self.speak:
                 print(WARN+"[WARNING] Could not find comments count information."+END)
@@ -235,8 +236,8 @@ class Scraper(object):
         #
                 year = int(date_string[-4:])
                 month = int(month_string_to_number(date_string[:3]))
-                day = int(re.sub(r"\D", "", date_string).replace(date_string[-4:], ""))
-                return date(year, month, day)
+                day = int(sub(r"\D", "", date_string).replace(date_string[-4:], ""))
+                return formatdate(year, month, day)
             except:
                 try:
                     # Test form 2
@@ -265,7 +266,7 @@ class Scraper(object):
         sleep_time = 2
         if self.speak:
             print("[INFO] Sleeping for", sleep_time,"seconds")
-        time.sleep(sleep_time)
+        sleep(sleep_time)
 
         # Get title
         self.title = self.get_title()
@@ -306,7 +307,7 @@ class Scraper(object):
         sleep_time_2 = 2
         if self.speak:
             print("[INFO] Sleeping for", sleep_time_2, "seconds")
-        time.sleep(sleep_time_2)
+        sleep(sleep_time_2)
 
         # Get comments count
         self.comments_count = self.get_comments_count()
