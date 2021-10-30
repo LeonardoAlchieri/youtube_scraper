@@ -1,7 +1,7 @@
 #from os.path import dirname, basename, isfile
 from .scraper import Scraper
 
-__version__ = "0.1"
+__version__ = "0.2"
 #
 #import glob
 #modules = glob.glob(dirname(__file__)+"/*.py")
