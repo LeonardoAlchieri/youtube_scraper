@@ -1,10 +1,5 @@
-import bcolors
-import requests
-from lxml import html
+from bcolors import ERR, END, WARN
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from .functions import suffix_number, month_string_to_number, get_date_from_hour_mark
 from .comment import Comment
 import os
@@ -44,7 +39,7 @@ class Scraper(object):
         self.speak = speak
 
         if id == None:
-            print(bcolors.ERR+"[ERROR] No video id given."+bcolors.END)
+            print(ERR+"[ERROR] No video id given."+END)
             return -1
 
         self.video_id = id
@@ -94,7 +89,7 @@ class Scraper(object):
             return category_path.find_element_by_xpath("./../div/yt-formatted-string/a").text.strip()
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find category information."+bcolors.END)
+                print(WARN+"[WARNING] Could not find category information."+END)
             return "Unknown"
     #
     #
@@ -105,7 +100,7 @@ class Scraper(object):
             return driver.find_element_by_xpath('//*[@id="container"]/h1/yt-formatted-string').text
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find title information"+bcolors.END)
+                print(WARN+"[WARNING] Could not find title information"+END)
             return "Unknown"
     #
     #
@@ -117,7 +112,7 @@ class Scraper(object):
             return int(re.sub(r'\D', "", views_text))
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find views information"+bcolors.END)
+                print(WARN+"[WARNING] Could not find views information"+END)
             return "Unknown"
     #
     #
@@ -129,7 +124,7 @@ class Scraper(object):
             return channel_name_path.find_element_by_xpath('./div/div/yt-formatted-string/a').text.strip()
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find channel name information"+bcolors.END)
+                print(WARN+"[WARNING] Could not find channel name information"+END)
             return "Unknown"
     #
     #
@@ -142,21 +137,21 @@ class Scraper(object):
                 numbers = float(re.sub(r"[A-Z].*$","",subscribers_string))
             except:
                 if self.speak:
-                    print(bcolors.WARN+"[WARNING] Problem converting subscriber count. Maybe the number has a coma."+bcolors.END)
+                    print(WARN+"[WARNING] Problem converting subscriber count. Maybe the number has a coma."+END)
                 try:
                     auxiliary_string = subscribers_string.replace(',','.')
                     numbers = float(re.sub(r"[A-Z].*$","",auxiliary_string))
                 except:
                     try:
                         if self.speak:
-                            print(bcolors.WARN+"[WARNING] Problem converting subscriber count. Maybe the number is whole"+bcolors.END)
+                            print(WARN+"[WARNING] Problem converting subscriber count. Maybe the number is whole"+END)
                         numbers = int(re.sub(r"\D", "", subscribers_string))
                     except:
                         #
                         # [NOTE] Most of the times, when this is outputted, it's
                         # due to abscence of subscribe number desplayed
                         #
-                        print(bcolors.ERR+"[ERROR] Could not convert subscribe count from string to number"+bcolors.END)
+                        print(ERR+"[ERROR] Could not convert subscribe count from string to number"+END)
                         return "Unknown"
 
             specification_letter = re.sub(r"[^A-Z]","",subscribers_string)
@@ -165,7 +160,7 @@ class Scraper(object):
 
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find subscriber count information"+bcolors.END)
+                print(WARN+"[WARNING] Could not find subscriber count information"+END)
             return "Unknown"
     #
     #
@@ -181,18 +176,18 @@ class Scraper(object):
                 likes_aux = int(re.sub(r'\D', "", likes_string))
             except:
                 if self.speak:
-                    print(bcolors.WARN+"[WARNING] Could not find like count information"+bcolors.END)
+                    print(WARN+"[WARNING] Could not find like count information"+END)
                 likes_aux = "Unknown"
             try:
                 dislikes_string = menu_container_path.find_element_by_xpath("./div/ytd-menu-renderer/div/ytd-toggle-button-renderer[2]/a/yt-formatted-string").get_attribute("aria-label").strip()
                 dislikes_aux = int(re.sub(r'\D', "", dislikes_string))
             except:
                 if self.speak:
-                    print(bcolors.WARN+"[WARNING] Could not find dislike count information"+bcolors.END)
+                    print(WARN+"[WARNING] Could not find dislike count information"+END)
                 dislikes_aux = "Unknown"
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find like and dislike count information."+bcolors.END)
+                print(WARN+"[WARNING] Could not find like and dislike count information."+END)
             likes_aux = "Unknown"
             dislikes_aux = "Unknown"
         return likes_aux, dislikes_aux
@@ -205,7 +200,7 @@ class Scraper(object):
             return driver.find_element_by_xpath('//*[@id="description"]/yt-formatted-string').text.strip()
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find description information."+bcolors.END)
+                print(WARN+"[WARNING] Could not find description information."+END)
             return "Unknown"
 
     #
@@ -219,7 +214,7 @@ class Scraper(object):
             return int(re.sub(r"\D", "", comments_text))
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find comments count information."+bcolors.END)
+                print(WARN+"[WARNING] Could not find comments count information."+END)
             return "Unknown"
     #
     #
@@ -250,11 +245,11 @@ class Scraper(object):
                     return get_date_from_hour_mark(date_string[10:12])
                 except:
                     if self.speak:
-                        print(bcolors.WARN+"[WARNING] Could not find date information."+bcolors.END)
+                        print(WARN+"[WARNING] Could not find date information."+END)
                     return "Unknown"
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find date information."+bcolors.END)
+                print(WARN+"[WARNING] Could not find date information."+END)
             return "Unknown"
         return 0
     #
@@ -297,7 +292,7 @@ class Scraper(object):
                 print("[INFO] 'Show more' button pressed.")
         except:
             if self.speak:
-                print(bcolors.WARN+"[WARNING] Could not find 'Show more' button"+bcolors.END)
+                print(WARN+"[WARNING] Could not find 'Show more' button"+END)
 
         # Get description
         self.description = self.get_description()
