@@ -3,6 +3,7 @@
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.org/project/YoutubeScraper/)
 [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.org/project/YoutubeScraper/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pybadges.svg)](https://pypi.org/project/YoutubeScraper/)
+[![Downloads](https://pepy.tech/badge/youtubescraper)](https://pepy.tech/project/youtubescraper)
 
 This library provides with a class, `Scraper`, that will take most of the information present on a video page.
 
